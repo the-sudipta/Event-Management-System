@@ -1,0 +1,79 @@
+/* Main Content */
+.content {
+    margin-left: 270px;
+    padding: 20px;
+    width: calc(100% - 270px);
+    text-align: center;
+}
+
+/* Search Bar */
+#tripSearch {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Trips Container */
+.trips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Trip Card */
+.trip-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 280px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trip-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Trip Details (Hidden by Default) */
+.trip-details {
+    display: none;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+}
+
+.trip-card:hover .trip-details {
+    display: block;
+}
+
+/* Status Colors */
+.completed { color: green; }
+.pending { color: orange; }
+.upcoming { color: blue; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .trip-card {
+        width: 90%;
+    }
+}

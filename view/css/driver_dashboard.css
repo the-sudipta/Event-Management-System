@@ -1,0 +1,26 @@
+.dashboard {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 220px;
+    height: 120px;
+}
+
+/* Map Section */
+.map-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#map {
+    width: 90%;
+    height: 400px;
+    margin: auto;
+    border-radius: 10px;
+}

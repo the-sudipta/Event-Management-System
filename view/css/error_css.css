@@ -1,0 +1,34 @@
+#validationModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40%;
+    background-color: #ffdddd;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    z-index: 1000;
+}
+
+#close_button {
+    cursor: pointer;
+    font-size: 30px;
+    color: #721c24;
+    position: absolute;
+    top: 0;
+    right: 0;
+    /*padding: 10px;*/
+    padding-bottom: 30px;
+    padding-right: 10px;
+}
+
+#validationModal p {
+    margin: 0;
+}
+
+.close {
+    cursor: pointer;
+    font-size: 30px;
+    color: #721c24;
+}

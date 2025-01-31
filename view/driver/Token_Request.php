@@ -350,18 +350,6 @@ if ($previous_token == ""){
 </main>
 
 
-<script>
-    function requestToken() {
-        let tokenCode = "TOKEN-" + Math.floor(1000 + Math.random() * 9000);
-        document.getElementById("tokenStatus").innerText = "Your active token: " + tokenCode;
-
-        let historyList = document.getElementById("historyList");
-        let newItem = document.createElement("li");
-        newItem.innerText = tokenCode + " - Requested Just Now";
-        historyList.prepend(newItem);
-    }
-</script>
-
 </body>
 </html>
 

@@ -1,6 +1,7 @@
 <?php
 global $routes, $backend_routes, $image_routes;
 require '../../routes.php';
+include './Loader_1.php';
 
 $Login_page = $routes['login'];
 $driver_dashboard = $routes["driver_dashboard"];
@@ -376,6 +377,18 @@ $get_My_Todays_Trip_Map = getMyTodaysTripMap($user_id);
 
 <script>
 
+    // Function to Show the Loader
+    function showLoader() {
+        document.getElementById("loadingOverlay").style.display = "flex";
+    }
+
+    // Function to Hide the Loader
+    function hideLoader() {
+        document.getElementById("loadingOverlay").style.display = "none";
+    }
+
+
+
     function toggleFullscreen() {
         var mapContainer = document.getElementById("map-container");
         if (!document.fullscreenElement) {
@@ -413,7 +426,11 @@ $get_My_Todays_Trip_Map = getMyTodaysTripMap($user_id);
             url: 'get_trips.php',
             type: 'GET',
             dataType: 'json',
+            beforeSend: function () {
+                showLoader(); // Show Loader before request
+            },
             success: function(trips) {
+                /// Turn the Loader OFF
                 if (!trips || trips.length === 0) {
                     console.log("No trips found for today.");
                     return;
@@ -467,8 +484,10 @@ $get_My_Todays_Trip_Map = getMyTodaysTripMap($user_id);
                 if (tripCoordinates.length > 0) {
                     map.fitBounds(bounds);
                 }
+                hideLoader(); // Hide Loader after request completes
             },
             error: function(xhr, status, error) {
+                hideLoader(); // Hide Loader If any error occurs
                 console.error("Error fetching trips:", error);
             }
         });

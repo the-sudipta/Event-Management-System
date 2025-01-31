@@ -46,7 +46,7 @@
 .trip-details {
     opacity: 0;
     visibility: hidden;
-    background: rgba(0, 0, 0, 0.73);
+    background: rgba(0, 0, 0, 1);
     color: white;
     padding: 0px;
     border-radius: 10px;

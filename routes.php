@@ -9,6 +9,7 @@ $routes = [
     'driver_dashboard' => '/Event-Management-System/view/driver/Driver_Dashboard.php',
     'token_request' => '/Event-Management-System/view/driver/Token_Request.php',
     'my_trips' => '/Event-Management-System/view/driver/My_Trips.php',
+    'loader_1' => '/Event-Management-System/view/driver/Loader_1.php',
 
 
 ];
@@ -23,6 +24,7 @@ $backend_routes = [
 
 $image_routes = [
     'user_icon' => '/Event-Management-System/view/static/image/user.png',
+    'user_icon_background_less' => '/Event-Management-System/view/static/image/user_bg_less.png',
     'cab_driver' => '/Event-Management-System/view/static/image/cab_driver.png',
 ];
 

@@ -1,41 +1,41 @@
-/* Navigation Panel (Common for All Pages) */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+/* Sidebar Styling */
+.sidebar {
+    background: #1c1c1c; /* Dark theme */
+    color: white;
+    width: 250px;
+    height: 100vh; /* Full height */
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
-    background: #f5f5f5;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
 }
 
 /* Sidebar Navigation */
-.sidebar {
-    width: 250px;
-    background: #333;
-    color: white;
-    height: 100vh;
-    padding: 20px;
-    position: fixed;
-}
-
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.sidebar ul li {
+    width: 100%;
 }
 
 .sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px;
     display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: background 0.3s;
 }
 
 .sidebar ul li a.active {
-    background: #ff7b00;
+    background: #ff5733;
+    border-radius: 5px;
 }
 
-/* Main Content */
-.content {
-    margin-left: 270px;
-    padding: 20px;
-    width: calc(100% - 270px);
-}

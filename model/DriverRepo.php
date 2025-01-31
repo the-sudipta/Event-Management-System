@@ -278,14 +278,14 @@ function deleteDriver($id) {
 }
 
 
-function createSeller($name, $phone,$user_id) {
+function createDriver($name, $car_name, $car_details, $user_id) {
     $conn = db_conn();
 
     // Hash the password using a secure hashing algorithm (e.g., password_hash)
 //    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Construct the SQL query
-    $insertQuery = "INSERT INTO `seller` (name, phone, user_id) VALUES (?, ?, ?)";
+    $insertQuery = "INSERT INTO `driver` (name, car_name, car_details, user_id) VALUES (?, ?, ?, ?)";
 
     try {
         // Prepare the statement
@@ -299,7 +299,7 @@ function createSeller($name, $phone,$user_id) {
         $status = 1;
 
         // Bind parameters
-        $stmt->bind_param('ssi', $name, $phone, $user_id);
+        $stmt->bind_param('sssi', $name, $car_name, $car_details, $user_id);
 
         // Execute the query
         $stmt->execute();

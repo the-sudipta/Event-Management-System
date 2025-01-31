@@ -2,192 +2,162 @@
 
 
 require_once __DIR__ . '/../model/db_connect.php';
-require_once __DIR__ . '/../model/CarRepo.php';
+require_once __DIR__ . '/../model/TripRepo.php';
 
-// Function to get total revenue
-function getRevenue($user_id) {
-    // Fetch all car data
-    $cars = []; // Array to store car data
 
-    $cars = findAllCarsByUserID($user_id);
+@session_start();
 
-    // Replace this with your database query to fetch all car data
-    // Example: $query = "SELECT * FROM car";
-    // Execute query and fetch data into $cars array
 
-    // Calculate total revenue
-    $revenue = 0;
-    foreach ($cars as $car) {
-        // If car availability is 'Sold' or 'Rented', calculate revenue
-        if ($car['availability'] == 'Sold' || $car['availability'] == 'Rented') {
-            // Convert original price to float
-            $price = floatval($car['original_price']);
-            // If car is rented, add 0.6% of price to revenue
-            if ($car['availability'] == 'Rented') {
-                $revenue += $price * 0.006;
-            } else {
-                $revenue += $price;
+function generateToken($pickup_location, $destination){
+    // Generate a token combining the "pickup_location-destination-6 Random Numbers"
+    // It is not necessary to use the full locations. An example token like : RAM-UTT-123456
+    $pickup_code = strtoupper(substr($pickup_location, 0, 3));
+    $destination_code = strtoupper(substr($destination, 0, 3));
+    $random_number = rand(100000, 999999);
+    $token = $pickup_code . '-' . $destination_code . '-' . $random_number;
+    return $token;
+}
+
+
+function getNextToken($user_id)
+{
+    $next_token = null;
+    $all_tokens = findAllTokensByUser_id($user_id);
+    $earliest_assigned_time = PHP_INT_MAX;
+
+    foreach ($all_tokens as $token_row) {
+        $assigned_time = strtotime($token_row['assigned_at']);
+        $status = strtolower($token_row['status']);
+
+        // Only consider "pending" tokens
+        if ($status === "pending") {
+            // Find the token with the earliest assigned time
+            if ($assigned_time < $earliest_assigned_time) {
+                $earliest_assigned_time = $assigned_time;
+                $next_token = $token_row;
+                $_SESSION["active_token_id"] = $token_row['id'];
+                // After Requesting a token, the status of that token needs to be changed to 'Active'
             }
         }
     }
 
-    return $revenue;
+    return $next_token;
 }
 
-// Function to get total profit
-function getProfit($user_id) {
-    // Fetch all car data
-    $cars = [];
 
-    $cars = findAllCarsByUserID($user_id);
+function getPreviousToken($user_id)
+{
+    $previous_token_row = null;
+    $all_tokens = findAllTokensByUser_id($user_id);
+    $latest_assigned_time = 0; // Store the latest expired token timestamp
 
-    // Calculate total profit
-    $profit = 0;
-    foreach ($cars as $car) {
-        // If car availability is 'Sold' or 'Rented', calculate profit
-        if ($car['availability'] == 'Sold' || $car['availability'] == 'Rented') {
-            // Convert original price to float
-            $price = floatval($car['original_price']);
-            // If car is rented, add 0.6% of price to profit
-            if ($car['availability'] == 'Rented') {
-                $profit += $price * 0.006;
-            } else {
-                // Assuming cost price is 80% of original price
-                $cost_price = $price * 0.8;
-                $profit += ($price - $cost_price);
+    foreach ($all_tokens as $token_row) {
+        $assigned_time = strtotime($token_row['assigned_at']);
+        $status = strtolower($token_row['status']);
+
+        // Only consider "expired" tokens
+        if ($status === "expired") {
+            // Find the token with the latest assigned time
+            if ($assigned_time > $latest_assigned_time) {
+                $latest_assigned_time = $assigned_time;
+                $previous_token_row = $token_row;
             }
         }
     }
 
-    return $profit;
+    return $previous_token_row;
 }
 
 
-// Function to get quantity of sold cars
-function getSoldCarQuantity($user_id) {
-    // Fetch all car data
-    $cars = [];
-    $cars = findAllCarsByUserID($user_id);
+function getMyTodaysTripCount($user_id) : int
+{
+    $trip_count = 0;
+    $all_my_trips = findAllTripsByUserID($user_id);
 
-    // Count sold cars
-    $sold_count = 0;
-    foreach ($cars as $car) {
-        if ($car['availability'] == 'Sold') {
-            $sold_count++;
+    // Get today's date (formatted as YYYY-MM-DD)
+    $today = date('Y-m-d');
+
+    foreach ($all_my_trips as $trip) {
+        // Extract end_time date (YYYY-MM-DD format)
+        $end_time_date = isset($trip['end_time']) ? date('Y-m-d', strtotime($trip['end_time'])) : null;
+        $status = strtolower($trip['status'] ?? '');
+
+        // Check if trip ended today and is marked as completed
+        if ($end_time_date === $today && $status === 'completed') {
+            $trip_count++;
         }
     }
 
-    return $sold_count;
+    return $trip_count;
 }
 
-// Function to get quantity of available cars
-function getAvailableCarQuantity($user_id) {
-    // Fetch all car data
-    $cars = [];
-    $cars = findAllCarsByUserID($user_id);
 
-    // Count available cars
-    $available_count = 0;
-    foreach ($cars as $car) {
-        if ($car['availability'] == 'Available') {
-            $available_count++;
-        }
-    }
-
-    return $available_count;
+function getMyTodaysEarning($user_id)
+{
+    return getMyTodaysTripCount($user_id) * 800;
 }
 
-// Function to get current month income
-function getCurrentMonthIncome($user_id) {
-    // Fetch all car data
-    $cars = [];
-    $cars = findAllCarsByUserID($user_id);
 
-    // Calculate current month income
-    $current_month_income = 0;
-    foreach ($cars as $car) {
-        // If car availability is 'Sold' or 'Rented', and date is in current month, calculate income
-        if (($car['availability'] == 'Sold' || $car['availability'] == 'Rented') && date('m', strtotime($car['date'])) === date('m')) {
-            // Convert original price to float
-            $price = floatval($car['original_price']);
-            // If car is rented, add 0.6% of price to income
-            if ($car['availability'] == 'Rented') {
-                $current_month_income += $price * 0.006;
-            } else {
-                $current_month_income += $price;
+function getMyTodaysTripMap($user_id)
+{
+    $all_my_trips = findAllTripsByUserID($user_id);
+
+    // Get today's date (YYYY-MM-DD format)
+    $today = date('Y-m-d');
+
+    // Initialize an array to store formatted trip data
+    $tripMapData = [];
+    $tripSerial = 1; // Start trip serial from 1
+
+    foreach ($all_my_trips as $trip) {
+        // Extract the date part from end_time
+        $tripDate = isset($trip['end_time']) ? date('Y-m-d', strtotime($trip['end_time'])) : null;
+        $tripStatus = strtolower($trip['status'] ?? ''); // Convert status to lowercase
+
+        // Process only completed trips from today
+        if ($tripDate === $today && $tripStatus === 'completed') {
+            $pickup_coords = getCoordinatesFromAddress($trip['pickup_location']);
+            $destination_coords = getCoordinatesFromAddress($trip['destination']);
+
+            // Ensure we got valid coordinates
+            if ($pickup_coords && $destination_coords) {
+                $tripMapData[] = [
+                    "serial"          => $tripSerial++, // Assign Serial Number
+                    "trip_id"         => $trip['id'],
+                    "pickup_location" => $pickup_coords, // Converted to lat,lng
+                    "destination"     => $destination_coords, // Converted to lat,lng
+                    "pickup_name"     => $trip['pickup_location'], // Location name for popup
+                    "destination_name"=> $trip['destination'], // Location name for popup
+                    "start_time"      => $trip['start_time'] ?? "-",
+                    "assigned_at"     => $trip['assigned_at'] ?? "-",
+                    "end_time"        => $trip['end_time'] ?? "-",
+                    "status"          => ucfirst($tripStatus) // Capitalized status
+                ];
             }
         }
     }
 
-    return $current_month_income;
+    return $tripMapData; // Return data with coordinates
 }
 
-// Function to get distinct years from date strings
-function getYearsInArray($user_id) {
-    // Fetch all car data
-    $cars = [];
-    $cars = findAllCarsByUserID($user_id);
+/**
+ * Convert a textual address into latitude and longitude using OpenStreetMap Nominatim API.
+ */
+function getCoordinatesFromAddress($address)
+{
+    $encodedAddress = urlencode($address);
+    $url = "https://nominatim.openstreetmap.org/search?format=json&q=$encodedAddress";
 
-    // Extract years from date strings
-    $years = [];
-    foreach ($cars as $car) {
-        if ($car['date'] !== null) {
-            $year = date('Y', strtotime($car['date']));
-            if (!in_array($year, $years)) {
-                $years[] = $year;
-            }
+    $context = stream_context_create(["http" => ["header" => "User-Agent: MyEventManagementApp/1.0"]]);
+    $response = file_get_contents($url, false, $context);
+
+    if ($response) {
+        $data = json_decode($response, true);
+        if (!empty($data) && isset($data[0]['lat']) && isset($data[0]['lon'])) {
+            return [$data[0]['lat'], $data[0]['lon']]; // Returns [latitude, longitude]
         }
     }
 
-    // Sort the years array in ascending order
-    sort($years);
-
-    return $years;
+    return null; // Return null if no valid response
 }
 
-// Function to get revenues per year in array
-function getRevenuesPerYearInArray($user_id) {
-    // Fetch all car data
-    $cars = findAllCarsByUserID($user_id);
-    $revenues = [];
-
-    // Calculate revenues for each car
-    foreach ($cars as $car) {
-        // Check if car availability is 'Sold' or 'Rented' and $car['date'] is not null
-        if (($car['availability'] == 'Sold' || $car['availability'] == 'Rented') && isset($car['date']) && $car['date'] !== null) {
-            // Convert original price to float
-            $price = floatval($car['original_price']);
-            // Extract the year from the date
-            $year = date('Y', strtotime($car['date']));
-            // Check if the year key exists in $revenues array
-            if (!array_key_exists($year, $revenues)) {
-                // If the key doesn't exist, initialize it with 0
-                $revenues[$year] = 0;
-            }
-            // Calculate revenue based on availability
-            if ($car['availability'] == 'Rented') {
-                $revenues[$year] += $price * 0.006;
-            } else {
-                $revenues[$year] += $price;
-            }
-        }
-    }
-
-    // Sort the revenues array by year
-    ksort($revenues);
-
-    return $revenues;
-}
-
-
-
-
-// Testing time : #304 :
-//echo "Total Revenue: $" . getRevenue(1) . "<br>";
-//echo "Total Profit: $" . getProfit(1) . "<br>";
-//echo "Quantity of Sold Cars: " . getSoldCarQuantity(1) . "<br>";
-//echo "Quantity of Available Cars: " . getAvailableCarQuantity(1) . "<br>";
-//echo "Current Month Income: $" . getCurrentMonthIncome(1) . "<br>";
-//echo "Years in Database: " . implode(", ", getYearsInArray(1)) . "<br>";
-//echo "Revenues Per Year: <pre>" . print_r(getRevenuesPerYearInArray(1), true) . "</pre>";
-//

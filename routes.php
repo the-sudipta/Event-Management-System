@@ -17,6 +17,7 @@ $backend_routes = [
     'login_controller' => '/Event-Management-System/controller/LoginController.php',
     'logout_controller' => '/Event-Management-System/controller/LogoutController.php',
     'driver_signup_controller' => '/Event-Management-System/controller/driver/Driver_SignupController.php',
+    'driver_token_request_controller' => '/Event-Management-System/controller/driver/Token_RequestController.php',
 ];
 
 

@@ -4,10 +4,16 @@ global $routes, $backend_routes, $image_routes;
 require '../routes.php';
 
 
-
+$error_message = "";
 $loginController_file = $backend_routes['login_controller'];
 $driver_signup = $routes['driver_signup'];
 $logo = $image_routes['user_icon'];
+
+// Message from Backend
+if (isset($_GET['message'])) {
+    $error_message = htmlspecialchars($_GET['message']);
+    $show_backend_error_modal = true;
+}
 
 
 ?>
@@ -99,6 +105,19 @@ $logo = $image_routes['user_icon'];
             // location.reload(true);
         }
 
+        // Show the backend modal if there is an error message
+        window.onload = function () {
+            var errorMessage = "<?php echo addslashes($error_message); ?>";
+            if (errorMessage.trim() !== "") {
+                document.getElementById('backendValidationModal').style.display = 'block';
+            }
+        };
+
+        close_backend_modal = () => {
+            document.getElementById("backendValidationModal").style.display = "none";
+            // location.reload(true);
+        }
+
 
 
         function validateForm() {
@@ -150,6 +169,14 @@ $logo = $image_routes['user_icon'];
     </div>
     <p id="validationMessage"></p>
 </div>
+
+<!-- Validation Modal for Backend -->
+<div id="backendValidationModal" style="display: none; position: fixed; top: 20px; right: 20px; width: 40%; padding: 15px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,0.2);">
+    <span id="backend_close_button" style="cursor: pointer; font-size: 25px; position: absolute; top: 5px; right: 10px;" onclick="close_backend_modal();">&times;</span>
+    <p id="backendValidationMessage">Backend Says => <?php echo $error_message; ?></p>
+</div>
+
+
 
 
 <div class="wrapper">

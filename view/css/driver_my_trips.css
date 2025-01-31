@@ -44,26 +44,33 @@
 
 /* Trip Details (Hidden by Default) */
 .trip-details {
-    display: none;
-    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    visibility: hidden;
+    background: rgba(0, 0, 0, 0.73);
     color: white;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 0px;
+    border-radius: 10px;
     position: absolute;
     bottom: 10px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(10px);
     width: 90%;
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, visibility 0.4s ease-in-out;
+    box-shadow: 0px 4px 15px rgba(255, 65, 108, 0.4);
 }
 
+/* Show Trip Details on Hover */
 .trip-card:hover .trip-details {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    box-shadow: 0px 8px 20px rgba(255, 65, 108, 0.6);
 }
 
 /* Status Colors */
-.completed { color: green; }
+.ongoing { color: green; }
 .pending { color: orange; }
-.upcoming { color: blue; }
+.completed { color: blue; }
 
 /* Responsive Design */
 @media (max-width: 768px) {

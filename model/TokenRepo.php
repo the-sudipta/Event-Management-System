@@ -119,13 +119,13 @@ function findTokenByTokenID($id)
 }
 
 
-function updateToken($status, $id)
+function updateTokenStatus($status, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
     $updateQuery = "UPDATE `token` SET 
-                    status = ?,
+                    status = ?
                     WHERE id = ?";
 
     try {

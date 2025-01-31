@@ -39,7 +39,7 @@ function findAllTrips()
 }
 
 
-function findAllTripsByUser_id($user_id)
+function findAllTripsByUserID($user_id)
 {
     $conn = db_conn();
     $selectQuery = 'SELECT * FROM `trip` WHERE `user_id` = '.$user_id;
@@ -73,7 +73,6 @@ function findAllTripsByUser_id($user_id)
         $conn->close();
     }
 }
-
 
 function findTripByTripID($id)
 {
@@ -118,6 +117,48 @@ function findTripByTripID($id)
     }
 }
 
+function findTripByTokenID($token_id)
+{
+    $conn = db_conn();
+    $selectQuery = 'SELECT * FROM `trip` WHERE `token_id` = ?';
+
+    try {
+        $stmt = $conn->prepare($selectQuery);
+
+        // Check if the prepare statement was successful
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $conn->error);
+        }
+
+        // Bind the parameter
+        $stmt->bind_param("i", $token_id);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Fetch the Trip as an associative array
+        $trip = $result->fetch_assoc();
+
+        // Check for an empty result set
+        if (!$trip) {
+            throw new Exception("No trip found with token ID: " . $token_id);
+        }
+
+        // Close the statement
+        $stmt->close();
+
+        return $trip;
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        return null;
+    } finally {
+        // Close the database connection
+        $conn->close();
+    }
+}
 
 function updateTripStatus($status, $id)
 {

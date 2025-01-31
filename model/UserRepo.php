@@ -127,6 +127,49 @@ function findUserByUserID($id)
     }
 }
 
+function findUserByEmail($email)
+{
+    $conn = db_conn();
+    $selectQuery = 'SELECT * FROM `user` WHERE `email` = ?';
+
+    try {
+        $stmt = $conn->prepare($selectQuery);
+
+        // Check if the prepare statement was successful
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $conn->error);
+        }
+
+        // Bind the parameter
+        $stmt->bind_param("s", $email);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Fetch the user as an associative array
+        $user = $result->fetch_assoc();
+
+        // Check for an empty result set
+        if (!$user) {
+            return null;
+        }
+
+        // Close the statement
+        $stmt->close();
+
+        return $user;
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        return null;
+    } finally {
+        // Close the database connection
+        $conn->close();
+    }
+}
+
 
 function updateUser($data, $id)
 {

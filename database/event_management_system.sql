@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 31, 2025 at 06:01 AM
+-- Generation Time: Jan 31, 2025 at 05:27 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -82,7 +82,8 @@ INSERT INTO `token` (`id`, `token`, `status`, `user_id`, `assigned_at`) VALUES
 (2, 'BAD-NAD-122561', 'Expired', 1, '2025-01-30 18:08:31'),
 (3, 'NAD-MIR-773313', 'Pending', 1, '2025-01-31 18:08:31'),
 (4, 'GUL-DHA-245134', 'Expired', 1, '2025-01-28 19:08:31'),
-(5, 'MOT-RAM-101002', 'Expired', 1, '2025-01-30 19:08:31');
+(5, 'MOT-RAM-101002', 'Expired', 1, '2025-01-30 19:08:31'),
+(6, 'KHI-FAR-435462', 'Expired', 1, '2025-01-31 10:40:31');
 
 -- --------------------------------------------------------
 
@@ -107,11 +108,12 @@ CREATE TABLE `trip` (
 --
 
 INSERT INTO `trip` (`id`, `pickup_location`, `destination`, `start_time`, `end_time`, `status`, `notes`, `token_id`, `user_id`) VALUES
-(1, 'Rampura Bazar', 'Gulshan', '2025-01-31 04:25:35', NULL, 'Ongoing', NULL, 1, 1),
-(2, 'Nadda Bus Stand', 'Mirpur 11', NULL, NULL, 'Pending', NULL, 3, 1),
-(3, 'Gulshan', 'Dhanmondi', '2025-01-27 04:25:35', '2025-01-27 06:00:35', 'Completed', NULL, 4, 1),
-(4, 'Badda', 'Nadda', '2025-01-27 10:08:35', '2025-01-27 11:45:35', 'Completed', NULL, 5, 1),
-(5, 'Motijheel', 'Rampura', '2025-01-31 03:45:35', '2025-01-31 04:45:35', 'Completed', NULL, 5, 1);
+(1, 'Rampura Bazar, Dhaka', 'Gulshan, Dhaka', '2025-01-31 04:25:35', NULL, 'Ongoing', NULL, 1, 1),
+(2, 'Nadda Bus Stand, Dhaka', 'Mirpur 11, Dhaka', NULL, NULL, 'Pending', NULL, 3, 1),
+(3, 'Gulshan, Dhaka', 'Dhanmondi, Dhaka', '2025-01-27 04:25:35', '2025-01-27 06:00:35', 'Completed', NULL, 4, 1),
+(4, 'Badda, Dhaka', 'Nadda, Dhaka', '2025-01-27 10:08:35', '2025-01-27 11:45:35', 'Completed', NULL, 5, 1),
+(5, 'Motijheel, Dhaka', 'Rampura, Dhaka', '2025-01-31 03:45:35', '2025-01-31 04:45:35', 'Completed', NULL, 5, 1),
+(6, 'Khilgaon, Dhaka', 'Farmgate, Dhaka', '2025-01-31 10:45:35', '2025-01-31 11:45:35', 'Completed', NULL, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -190,13 +192,13 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `token`
 --
 ALTER TABLE `token`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `trip`
 --
 ALTER TABLE `trip`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user`

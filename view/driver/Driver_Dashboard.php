@@ -377,6 +377,8 @@ $get_My_Todays_Trip_Map = getMyTodaysTripMap($user_id);
 
 <script>
 
+    let isFirstLoad = true; // Flag to track the first load
+
     // Function to Show the Loader
     function showLoader() {
         document.getElementById("loadingOverlay").style.display = "flex";
@@ -427,7 +429,9 @@ $get_My_Todays_Trip_Map = getMyTodaysTripMap($user_id);
             type: 'GET',
             dataType: 'json',
             beforeSend: function () {
-                showLoader(); // Show Loader before request
+                if (isFirstLoad) {
+                    showLoader(); // Show loader only on the first load
+                }
             },
             success: function(trips) {
                 /// Turn the Loader OFF
@@ -485,6 +489,7 @@ $get_My_Todays_Trip_Map = getMyTodaysTripMap($user_id);
                     map.fitBounds(bounds);
                 }
                 hideLoader(); // Hide Loader after request completes
+                isFirstLoad = false; // Set the flag to false after first load
             },
             error: function(xhr, status, error) {
                 hideLoader(); // Hide Loader If any error occurs
